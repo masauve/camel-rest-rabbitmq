@@ -21,31 +21,48 @@
         <bean class="org.apache.camel.component.swagger.DefaultCamelSwaggerServlet" />
 </service>
 
-
+<!--  RabbitMQ connection factory configuration. In real life scenario, this should be externalised to configuration files -->
+<bean id="customConnectionFactory" class="com.rabbitmq.client.ConnectionFactory">
+  <property name="host" value="localhost"/>
+  <property name="port" value="5672"/>
+  <property name="username" value="guest"/>
+  <property name="password" value="guest"/>
+</bean>
 
 <!-- Java Class to marshall the JSON message in, currently not used, but handy if transformation and operations on the message are needed -->
-<bean id="myMessage" class="org.demo.camel.rabbitmq.Message"/>
+<bean id="message" class="org.demo.camel.rabbitmq.Message"/>
 
 
 <!--  Camel Context for route execution -->
-<camelContext id="rest2file" xmlns="http://camel.apache.org/schema/blueprint">
+<camelContext xmlns="http://camel.apache.org/schema/blueprint" id="RabbitMQContext">
+
+<!--  JSON to Pojo marshalling tool -->
   <dataFormats>
     <json library="Jackson" unmarshalTypeName="org.demo.camel.rabbitmq.Message" id="jack"/>
   </dataFormats>
-  <restConfiguration component="jetty" host="localhost" port="8080" bindingMode="json"/>
+  
+<!--  Configuration of the REST server, currently using Jetty, many options are possible --> 
+  <restConfiguration component="jetty" host="localhost" port="8080"  bindingMode="json"/>
+ 
+<!-- Rest API for this context, currently only 1 operation, could add more easily --> 
   <rest consumes="application/json" produces="application/json">
-    <description>Message REST Service put operation on the /message path calls direct: endpoint. See route below</description>
+    <description>Message REST Service</description>
+    
+   <!--  put operation on the /message path calls direct: endpoint. See route below   --> 
     <put uri="/message" type="org.demo.camel.rabbitmq.Message">
-      <description>Send JSON Message to file</description>
+      <description>Send JSON Message to Rabbit MQ</description>
       <to uri="direct:addMessage"/>
     </put>
   </rest>
+
   <route id="SendToRabbitMQRoute">
+    <!-- Route listen to direct endpoint -->
     <from uri="direct:addMessage"/>
+    <!-- Pojo to JSON marshalling -->
     <marshal ref="jack"/>
     <log message="MSG: ${body}" loggingLevel="INFO"/>
-    <to uri="file:target/data?fileName=message-${date:now:yyyyMMdd}.json"/>
+    <to uri="rabbitmq://localhost/EMPLOYEE?autoAck=true"/>
   </route>
-</camelContext>
+  </camelContext>
 
 </blueprint>
