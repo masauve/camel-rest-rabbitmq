@@ -18,7 +18,7 @@
 
 <!--  Camel Context for route execution -->
 <camelContext id="RabbitMQContextRestlet" xmlns="http://camel.apache.org/schema/blueprint">
-  <restConfiguration component="restlet" host="localhost" port="9091" bindingMode="json"/>
+  <restConfiguration component="restlet" host="0.0.0.0" port="8181" bindingMode="json"/>
   <rest consumes="application/json" produces="application/json">
     <description>Message REST Service - restlet
 Rest API for this context, currently only 1 operation, could add more easily
@@ -28,7 +28,7 @@ put operation on the /message path calls direct: endpoint. See route below</desc
       <to uri="direct:addMessage"/>
     </get>
   </rest>
-  <route id="SendToRabbitMQRoute2">
+  <route id="sendToQueueRoute">
     <from uri="direct:addMessage"/>
     <setBody>
       <simple>${header.message}</simple>

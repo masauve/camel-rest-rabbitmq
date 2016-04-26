@@ -9,18 +9,14 @@
 <!--  Service definition for Swagger, not used at this point, swagger offers a nice UI to browse and execute REST APIs -->
 <service interface="javax.servlet.http.HttpServlet">
         <service-properties>
-            <entry key="alias" value="/api-docs/*"/>
-            <entry key="init-prefix" value="init."/>
-            <entry key="init.base.path" value="//localhost:8080/"/>
-            <entry key="init.api.path" value="//localhost:8181/api-docs"/>
-            <entry key="init.api.title" value="Rest API"/>
-            <entry key="init.api.version" value="1.0"/>
-            <entry key="init.api.description"
-                value="Demo API"/>
+            <entry key="base.path" value="rest"/>
+            <entry key="api.path" value="api-docs"/>
+            <entry key="api.title" value="Rest API"/>
+            <entry key="api.version" value="1.0"/>
+            <entry key="api.description" value="Demo API"/>
         </service-properties>
         <bean class="org.apache.camel.component.swagger.DefaultCamelSwaggerServlet" />
 </service>
-
 
 
 <!-- Java Class to marshall the JSON message in, currently not used, but handy if transformation and operations on the message are needed -->
@@ -32,19 +28,19 @@
   <dataFormats>
     <json library="Jackson" unmarshalTypeName="org.demo.camel.rabbitmq.Message" id="jack"/>
   </dataFormats>
-  <restConfiguration component="jetty" host="localhost" port="8080" bindingMode="json"/>
+  <restConfiguration component="jetty" host="0.0.0.0" port="9090" bindingMode="json"/>
   <rest consumes="application/json" produces="application/json">
     <description>Message REST Service put operation on the /message path calls direct: endpoint. See route below</description>
     <put uri="/message" type="org.demo.camel.rabbitmq.Message">
       <description>Send JSON Message to file</description>
-      <to uri="direct:addMessage"/>
+      <to uri="direct:storeMessage"/>
     </put>
   </rest>
   <route id="SendToRabbitMQRoute">
-    <from uri="direct:addMessage"/>
+    <from uri="direct:storeMessage"/>
     <marshal ref="jack"/>
     <log message="MSG: ${body}" loggingLevel="INFO"/>
-    <to uri="file:target/data?fileName=message-${date:now:yyyyMMdd}.json"/>
+    <to uri="file:target/data?fileName=message-${date:now:yyyyMMddhhmmss}.json"/>
   </route>
 </camelContext>
 
