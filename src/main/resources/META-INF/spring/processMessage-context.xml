@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+  <camelContext trace="false" id="processMessageContext" xmlns="http://camel.apache.org/schema/spring">
+  <route id="readMessageRoute">
+    <from uri="rabbitmq://localhost/TestQueue?autoAck=true"/>
+    <setHeader headerName="Exchange.HTTP_METHOD">
+      <constant>GET</constant>
+    </setHeader>
+    <setHeader headerName="Exchange.HTTP_URI">
+      <constant>http://localhost:9091</constant>
+    </setHeader>
+    <setHeader headerName="Exchange.HTTP_PATH">
+      <constant>mock/${body}</constant>
+    </setHeader>
+    <log message="MSG: Received Message ${body}" loggingLevel="INFO"/>
+    <to uri="jetty://http://localhost:9091/mock" id="callApi"/>
+  </route>
+</camelContext>
+
+</beans>

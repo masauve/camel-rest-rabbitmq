@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+  <camelContext trace="false" id="restAPIContext" xmlns="http://camel.apache.org/schema/spring">
+  <restConfiguration component="restlet" host="0.0.0.0" port="9091" bindingMode="json"/>
+  <rest consumes="application/json" produces="application/json">
+    <description>Demo Rest API</description>
+    <get uri="/rs/ipblock/{message}">
+      <description></description>
+      <to uri="direct:addMessage"/>
+    </get>
+    <get uri="/mock/{message}">
+      <description></description>
+      <to uri="direct:simulateCaller"/>
+    </get>
+  </rest>
+  <route id="processMessageRoute">
+    <from uri="direct:addMessage"/>
+    <choice id="routeMessage">
+      <when>
+        <simple>${header.message} contains '12345'</simple>
+        <setBody>
+          <simple>${header.message}</simple>
+        </setBody>
+        <log message="MSG: ${body}" loggingLevel="INFO"/>
+        <to uri="rabbitmq://localhost/TestQueue?autoAck=true"/>
+      </when>
+      <otherwise>
+        <log message="MESSAGE REJECTED" loggingLevel="INFO"/>
+      </otherwise>
+    </choice>
+  </route>
+  <route id="MockSystemRoute">
+    <from uri="direct:simulateCaller"/>
+    <setBody>
+      <simple>${header.message}</simple>
+    </setBody>
+    <log message="MSG: ${body}" loggingLevel="INFO"/>
+    <to uri="file:target/data?fileName=message-${date:now:yyyyMMddhhmmss}.json"/>
+  </route>
+</camelContext>
+
+</beans>
