@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+ 	
+   <bean id="fuseDb" class="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource">
+    <property name="databaseName" value="fuse"/>
+    <property name="url" value="jdbc:mysql://localhost/fusedb" />
+    <property name="user" value="fuse"/>
+    <property name="password" value="password"/>
+  </bean>   	
+
+  <camelContext trace="false" xmlns="http://camel.apache.org/schema/spring">
+  <route>
+    <from uri="timer://mytimer?repeatCount=1"/>
+     <setBody>
+       <constant>select * from customer</constant>
+     </setBody>
+      <log message="QUERY: ${body}" loggingLevel="INFO"/>
+    <to uri="jdbc:fuseDb"/>
+         <log message="RESULT: ${body}" loggingLevel="INFO"/>
+  </route>
+</camelContext>
+
+</beans>

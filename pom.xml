@@ -1,172 +1,173 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-
-  <groupId>org.demo.camel</groupId>
-  <artifactId>rabbitmq</artifactId>
-  <packaging>jar</packaging>
-  <version>2.0.0-SNAPSHOT</version>
-
-  <name>A Camel Spring Route</name>
-  <url>http://www.myorganization.org</url>
-
+  <groupId>org.camel.demo</groupId>
+  <artifactId>amqp-rest-db</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>AMQP Demo</name>
+  <url>http://fusesource.com</url>
+  <modules>
+    <module>amqp-routes</module>
+    <module>amqp-common</module>
+  </modules>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <slf4j-api-version>1.7.13</slf4j-api-version>
+    <cxf-version>3.0.4.redhat-621084</cxf-version>
+    <camel-version>2.15.1.redhat-621084</camel-version>
+    <fabric.version>1.2.0.redhat-621084</fabric.version>
+    <junit-version>4.11</junit-version>
   </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-core</artifactId>
+        <version>${camel-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-spring</artifactId>
+        <version>${camel-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-restlet</artifactId>
+        <version>${camel-version}</version>
+      </dependency>
+      <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-jdbc</artifactId>
+      <version>${camel-version}</version>
+  </dependency>
 
-  <repositories>
-    <repository>
-      <id>release.fusesource.org</id>
-      <name>FuseSource Release Repository</name>
-      <url>http://repo.fusesource.com/nexus/content/repositories/releases</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-    <repository>
-     <id>ea.fusesource.org</id>
-     <name>FuseSource Community Early Access Release Repository</name>
-     <url>http://repo.fusesource.com/nexus/content/groups/ea</url>
-     <snapshots>
-      <enabled>false</enabled>
-     </snapshots>
-     <releases>
-      <enabled>true</enabled>
-     </releases>
-    </repository>  
-    <repository>
-      <id>maven-restlet</id>
-      <name>Public online Restlet repository</name>
-      <url>http://maven.restlet.com</url>
-    </repository>  
-  </repositories>
-
-  <pluginRepositories>
-   <pluginRepository>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <id>redhat</id>
-      <url>https://maven.repository.redhat.com/ga/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>release.fusesource.org</id>
-      <name>FuseSource Release Repository</name>
-      <url>http://repo.fusesource.com/nexus/content/repositories/releases</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </pluginRepository>
-    <pluginRepository>
-     <id>ea.fusesource.org</id>
-     <name>FuseSource Community Early Access Release Repository</name>
-     <url>http://repo.fusesource.com/nexus/content/groups/ea</url>
-     <snapshots>
-      <enabled>false</enabled>
-     </snapshots>
-     <releases>
-      <enabled>true</enabled>
-     </releases>
-    </pluginRepository>      
-  </pluginRepositories>
-
+      <dependency>
+        <groupId>org.apache.camel.karaf</groupId>
+        <artifactId>apache-camel</artifactId>
+        <version>${camel-version}</version>
+        <type>xml</type>
+        <classifier>features</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j-api-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j-api-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-test</artifactId>
+        <version>${camel-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-test-spring</artifactId>
+        <version>${camel-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j-api-version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>org.apache.camel</groupId>
-      <artifactId>camel-core</artifactId>
-      <version>2.15.1.redhat-621084</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-spring</artifactId>
-      <version>2.15.1.redhat-621084</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-restlet</artifactId>
-      <version>2.15.1.redhat-621084</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
       <artifactId>camel-rabbitmq</artifactId>
-      <version>2.15.1.redhat-621084</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-jackson</artifactId>
-      <version>2.15.1.redhat-621084</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-jetty</artifactId>
-      <version>2.15.1.redhat-621084</version>
+      <version>${camel-version}</version>
     </dependency>
 
-
-    <!-- logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.10</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.10</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
-    </dependency>
-
-    <!-- testing -->
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-test-spring</artifactId>
-      <version>2.15.1.redhat-621084</version>
-      <scope>test</scope>
-    </dependency>
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>5.1.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-jackson</artifactId>
+        <version>${camel-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-jetty</artifactId>
+        <version>${camel-version}</version>
+      </dependency>
 
   </dependencies>
-
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>fuse-releases</id>
+      <name>JBoss Fuse Release Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/fs-releases/</url>
+    </repository>
+    <repository>
+    <id>maven-restlet</id>
+    <name>Public online Restlet repository</name>
+    <url>http://maven.restlet.com</url>
+  </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>fuse-releases</id>
+      <name>JBoss Fuse Release Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/fs-releases/</url>
+    </pluginRepository>
+  </pluginRepositories>
   <build>
-    <defaultGoal>install</defaultGoal>
-
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.5.1</version>
-        <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>2.6</version>
-        <configuration>
-          <encoding>UTF-8</encoding>
-        </configuration>
-      </plugin>
-
-      <!-- allows the route to be ran via 'mvn camel:run' -->
-      <plugin>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-maven-plugin</artifactId>
-        <version>2.15.1.redhat-621084</version>
-      </plugin>
-    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.3</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.4.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.camel</groupId>
+          <artifactId>camel-maven-plugin</artifactId>
+          <version>${camel-version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>3.0.1</version>
+          <extensions>true</extensions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.10</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
-
 </project>

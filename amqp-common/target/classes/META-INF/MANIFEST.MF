@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1462214104739
+Build-Jdk: 1.8.0_51
+Built-By: martinsauve
+Bundle-ManifestVersion: 2
+Bundle-Name: AMQP Demo :: Common
+Bundle-SymbolicName: org.camel.demo.amqp-common
+Bundle-Version: 3.0.0.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Tool: Bnd-3.0.0.201509101326
